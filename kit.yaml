@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dam-agents/dam-starter-kits/main/kit.schema.json
+# The starter kit this definition is offered as. It lives beside the
+# definition it describes, so a change to the agent and a change to the kit
+# are the same commit.
+schemaVersion: v1
+id: quality-assurance
+name: Quality Assurance
+description: >-
+  Tests the platform the way a person uses it. It runs its own copy of the
+  platform in its sandbox, at the branch or pull request you name, clicks
+  through the web UI with a real model and reports per step what passed, what
+  failed and what it could not test. Ask it in chat: "test PR #123" tests a
+  pull request against its issue without reading the code; "test <what> on
+  <branch>" tests what you describe.
+category: software
+icon: check
+docsUrl: https://github.com/dam-agents/quality-assurance
+harnesses: [claude-code]
+
+# The platform under test is a k3s cluster in the sandbox, which a pod cannot
+# host.
+backend: vm
+
+# `self` is this repository, at the commit the kit was resolved at. Into $HOME,
+# because the checkout of the platform belongs in work/.
+seed:
+  self: true
+  into: home
+
+resources:
+  cpu: "12"
+  memory: 16Gi
+  storage: 80Gi
+  note: >-
+    One full platform install: its images are built here, stored twice (the
+    build output and the cluster's image store), and its agents run here too.
+
+# The cluster is a process in the sandbox and stops with it. The agent stays up
+# so the platform under test stays warm between requests.
+hibernationTimeoutMin: 0
+
+# Required. The platform under test sends requests that already name a
+# connection (the placeholder of the agent's own model connection), and its
+# tools call other services with their own credentials or none. The gateway
+# injects only into requests that name a connection. The Browser Panel needs
+# it too.
+requireConnectionAddress: true
+
+env:
+  # The platform's install reads it: k3s runs on this host, not in a VM of its own.
+  - name: IS_SANDBOX
+    value: "1"
+  # The platform's install reads it: this kernel cannot run the service mesh,
+  # so the install leaves it out. No platform code sets it.
+  - name: PLATFORM_SANDBOX
+    value: "1"
+
+# The install pulls from registries, mirrors and package hosts no list can
+# enumerate ahead of time.
+egressPreset: all
+
+connections:
+  - accepts: [github, github-enterprise]
+    required: true
+    note: >-
+      Read only. Clones the platform's repository, and reads the pull requests
+      and issues it is asked to test. It never writes to GitHub.

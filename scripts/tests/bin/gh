@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Stub gh: a trace of every call, and canned answers. STUB_PR is the pull
+# request GraphQL returns, in the query's shape; STUB_GH_FAIL=1 fails every call.
+echo "$*" >> "$STUB_DIR/gh.calls"
+[ -z "${STUB_GH_FAIL:-}" ] || { echo "HTTP 502" >&2; exit 1; }
+case "$1 $2" in
+  "api graphql") printf '{"data":{"repository":{"pullRequest":%s}}}\n' "${STUB_PR:-null}" ;;
+  "api repos/"*) echo "${STUB_REPO_NAME:-acme/platform}" ;;
+  *) echo "stub gh: unexpected $*" >&2; exit 9 ;;
+esac

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Stub pgrep: k3s runs while $STUB_DIR/k3s.up exists.
+[ "$*" = "-x k3s-server" ] && [ -f "$STUB_DIR/k3s.up" ]

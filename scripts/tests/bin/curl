@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Stub curl. The runtime: sessions.list answers from STUB_RUNNING (the session
+# ids running a turn); STUB_RUNTIME_DOWN=1 is a runtime that does not answer.
+# The platform under test: its UI answers while $STUB_DIR/ui.up exists, and
+# Keycloak hands out a token unless STUB_KC_DOWN=1.
+url=""; sid=""
+for a in "$@"; do
+  case "$a" in
+    http*) url="$a" ;;
+    input=*) sid="$(printf '%s' "${a#input=}" | sed -n 's/.*"sessionId":"\([^"]*\)".*/\1/p')" ;;
+  esac
+done
+case "$url" in
+  */api/trpc/sessions.list*)
+    [ -z "${STUB_RUNTIME_DOWN:-}" ] || exit 7
+    case " ${STUB_RUNNING:-} " in
+      *" $sid "*) printf '{"result":{"data":{"sessions":[{"sessionId":"%s","running":true}]}}}' "$sid" ;;
+      *) printf '{"result":{"data":{"sessions":[]}}}' ;;
+    esac ;;
+  */realms/platform/protocol/openid-connect/token)
+    [ -z "${STUB_KC_DOWN:-}" ] && [ -f "$STUB_DIR/ui.up" ] || exit 7
+    printf '{"access_token":"tok-123"}' ;;
+  http://localhost:4444/) [ -f "$STUB_DIR/ui.up" ] || exit 7 ;;
+  *) exit 7 ;;
+esac

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Stub node: the dam CLI. A trace of every call (without the script path), and
+# answers from $STUB_DIR/agents.json and conns.json. Refuses without DAM_TOKEN.
+shift
+echo "$*" >> "$STUB_DIR/dam.calls"
+[ -n "${DAM_TOKEN:-}" ] || { echo "not logged in" >&2; exit 3; }
+case "$1 $2" in
+  "terms accept") ;;
+  "agent list") cat "$STUB_DIR/agents.json" 2>/dev/null || echo '[]' ;;
+  "agent delete") [ "$3" != "${STUB_DELETE_FAIL:-}" ] || exit 1 ;;
+  "connection list") cat "$STUB_DIR/conns.json" 2>/dev/null || echo '[]' ;;
+  "connection connect") echo '{"ok":true,"id":"conn-new"}' ;;
+  "connection update" | "connection disconnect") ;;
+  *) echo "stub dam: unexpected $*" >&2; exit 9 ;;
+esac

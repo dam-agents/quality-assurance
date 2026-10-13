@@ -51,9 +51,9 @@ cost of both shows on the one connection.
 
 ## Watching a test
 
-The agent tests in the browser the Browser Panel shows. You see the panel when
-the **Addressed credential injection** feature is on for you: Settings →
-Account, click the version five times, then Experimental.
+The agent tests in the browser the Browser Panel shows, beside its chat. The
+panel is there because the kit sets `requireConnectionAddress`; you turn
+nothing on.
 
 ## What it keeps on the instance
 

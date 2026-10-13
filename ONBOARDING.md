@@ -84,9 +84,7 @@ person the file.
 ## 4. Install
 
 Tell the person this takes a while (half an hour is normal), and that they can
-watch the later tests in the Browser Panel once the **Addressed credential
-injection** feature is on for them: Settings → Account, click the version five
-times, then Experimental.
+watch the later tests in the Browser Panel beside this chat.
 
 ```sh
 b="$(gh repo view <slug> --json defaultBranchRef --jq .defaultBranchRef.name)"

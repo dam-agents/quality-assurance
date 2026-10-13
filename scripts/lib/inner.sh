@@ -5,6 +5,13 @@
 # helm/values-local.yaml), not secrets. Every call goes straight to this host:
 # `*.localhost` must never leave through a proxy or the guest's DNS.
 
+# The image's MISE_DATA_DIR is the runner's tools folder, a share every machine
+# of the runner mounts from its host. mise unpacks a large archive there only to
+# fail its check that the target folder stays the same (Java, zig). The
+# platform's tools go under HOME instead, a plain disk that also keeps them
+# across a restart.
+export MISE_DATA_DIR="${QA_MISE_DATA_DIR:-$HOME/.local/share/mise}"
+
 UI_URL="${QA_UI_URL:-http://localhost:4444}"
 KC_HOST="keycloak.localhost"
 KC_PORT="${UI_URL##*:}"

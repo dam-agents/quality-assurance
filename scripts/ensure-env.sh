@@ -20,9 +20,9 @@
 #      - the same commit, not answering  → cluster:install
 #      - the same commit, answering      → nothing
 #      Before an install, `mise install` puts the checkout's tools in place in
-#      one process: the install's builds run side by side, and each would
-#      otherwise install a missing tool itself, two of them unpacking the same
-#      archive into one directory at once.
+#      one process, under HOME (lib/inner.sh), so a tool that fails to install
+#      stops here with its own error rather than inside one of the install's
+#      parallel builds.
 #   4. inner-setup.sh.
 #
 # The commands it runs are the platform's own (its mise tasks), from the

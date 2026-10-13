@@ -15,6 +15,7 @@ done_
 CASE="first install"; sandbox; origin; lock s-me main
 E main; is "$RC" 0 rc; has "$OUT" "ready: main at" out
 is "$(calls mise | grep -E '^(install|run cluster:)' | tr '\n' ,)" "install,run cluster:install," "tools first, then install"
+is "$(sort -u "$HOME/mise.datadirs")" "$HOME/.local/share/mise" "tools under HOME, never the shared tools folder"
 is "$(env_ ref)" main ref; is "$(env_ sha)" "$(sha_of main)" sha; is "$(env_ state)" ready state
 is "$(git -C "$HOME/work/platform" rev-parse HEAD)" "$(sha_of main)" "checkout at main"
 has "$(calls dam)" "connection connect anthropic --name outer-model --value platform:conn:conn-outer" "model connection"

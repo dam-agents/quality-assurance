@@ -4,6 +4,14 @@
 **Upgrade** steps a deployed instance applies when it crosses that version.
 Most versions need nothing. What changed and why lives in the pull requests.
 
+## 0.1.3 (2026-10-13)
+
+The scripts install the platform's tools under `~/.local/share/mise` instead
+of the image's tools folder, a share from the runner's host where mise could
+not unpack Java or zig. The first install downloads every tool once more.
+
+**Upgrade:** none.
+
 ## 0.1.2 (2026-10-13)
 
 `ensure-env.sh` installs the checkout's tools with one `mise install` before

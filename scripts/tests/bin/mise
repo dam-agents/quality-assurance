@@ -3,6 +3,7 @@
 # UI up ($STUB_DIR/k3s.up, ui.up); STUB_INSTALL_FAIL=1 fails the install,
 # STUB_TOOLS_FAIL=1 the tools.
 echo "$*" >> "$STUB_DIR/mise.calls"
+echo "${MISE_DATA_DIR:-}" >> "$STUB_DIR/mise.datadirs"
 case "$*" in
   "run cluster:install")
     [ -z "${STUB_INSTALL_FAIL:-}" ] || { echo "image import failed"; exit 1; }

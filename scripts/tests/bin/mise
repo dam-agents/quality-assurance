@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Stub mise: a trace of every call. An install or a restart brings k3s and the
-# UI up ($STUB_DIR/k3s.up, ui.up); STUB_INSTALL_FAIL=1 fails the install.
+# UI up ($STUB_DIR/k3s.up, ui.up); STUB_INSTALL_FAIL=1 fails the install,
+# STUB_TOOLS_FAIL=1 the tools.
 echo "$*" >> "$STUB_DIR/mise.calls"
 case "$*" in
   "run cluster:install")
@@ -8,6 +9,7 @@ case "$*" in
     touch "$STUB_DIR/k3s.up" "$STUB_DIR/ui.up" ;;
   "run cluster:helm") touch "$STUB_DIR/k3s.up" "$STUB_DIR/ui.up" ;;
   "run cluster:uninstall") rm -f "$STUB_DIR/ui.up" ;;
+  install) [ -z "${STUB_TOOLS_FAIL:-}" ] || { echo "failed to install tools"; exit 1; } ;;
   "run //packages/cli:build" | trust*) ;;
   *) echo "stub mise: unexpected $*" >&2; exit 9 ;;
 esac

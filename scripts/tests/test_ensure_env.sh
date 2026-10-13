@@ -14,7 +14,7 @@ done_
 
 CASE="first install"; sandbox; origin; lock s-me main
 E main; is "$RC" 0 rc; has "$OUT" "ready: main at" out
-has "$(calls mise)" "run cluster:install" install; lacks "$(calls mise)" uninstall "no uninstall"
+is "$(calls mise | grep -E '^(install|run cluster:)' | tr '\n' ,)" "install,run cluster:install," "tools first, then install"
 is "$(env_ ref)" main ref; is "$(env_ sha)" "$(sha_of main)" sha; is "$(env_ state)" ready state
 is "$(git -C "$HOME/work/platform" rev-parse HEAD)" "$(sha_of main)" "checkout at main"
 has "$(calls dam)" "connection connect anthropic --name outer-model --value platform:conn:conn-outer" "model connection"
@@ -22,7 +22,7 @@ done_
 
 CASE="same commit, answering: nothing to do"; sandbox; origin; lock s-me main; installed main main
 E main; is "$RC" 0 rc
-lacks "$(calls mise)" cluster: "no cluster task"
+lacks "$(calls mise)" cluster: "no cluster task"; is "$(calls mise | grep -c '^install')" 0 "no tools install"
 is "$(env_ data_since)" 2026-10-01T00:00:00Z "data kept"
 done_
 
@@ -34,7 +34,7 @@ done_
 
 CASE="new ref: uninstall, then install"; sandbox; origin; lock s-me feat/x; installed main main
 E feat/x; is "$RC" 0 rc
-is "$(calls mise | grep cluster: | tr '\n' ,)" "run cluster:uninstall,run cluster:install," order
+is "$(calls mise | grep -E '^(install|run cluster:)' | tr '\n' ,)" "run cluster:uninstall,install,run cluster:install," order
 lacks "$(env_ data_since)" 2026-10-01 "data reset"
 done_
 
@@ -60,6 +60,11 @@ done_
 CASE="a failed install is recorded"; sandbox; origin; lock s-me main; export STUB_INSTALL_FAIL=1
 E main; is "$RC" 1 rc; has "$ERR" "image import failed" "log tail"
 is "$(env_ state)" failed state
+done_
+
+CASE="tools that fail to install stop before the install"; sandbox; origin; lock s-me main; export STUB_TOOLS_FAIL=1
+E main; is "$RC" 1 rc; has "$ERR" "failed to install tools" "log tail"
+lacks "$(calls mise)" "run cluster:install" "no install"; is "$(env_ state)" failed state
 done_
 
 CASE="the model connection is refreshed, not duplicated"; sandbox; origin; lock s-me main; installed main main

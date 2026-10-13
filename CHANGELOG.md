@@ -4,6 +4,14 @@
 **Upgrade** steps a deployed instance applies when it crosses that version.
 Most versions need nothing. What changed and why lives in the pull requests.
 
+## 0.1.2 (2026-10-13)
+
+`ensure-env.sh` installs the checkout's tools with one `mise install` before
+the platform's install, whose parallel builds otherwise raced to unpack the
+same tool.
+
+**Upgrade:** none.
+
 ## 0.1.1 (2026-10-13)
 
 The Browser Panel needs no feature turned on: onboarding and the README no

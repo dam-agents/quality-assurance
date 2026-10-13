@@ -19,6 +19,10 @@
 #      - the same ref, a newer commit    → cluster:install, data kept
 #      - the same commit, not answering  → cluster:install
 #      - the same commit, answering      → nothing
+#      Before an install, `mise install` puts the checkout's tools in place in
+#      one process: the install's builds run side by side, and each would
+#      otherwise install a missing tool itself, two of them unpacking the same
+#      archive into one directory at once.
 #   4. inner-setup.sh.
 #
 # The commands it runs are the platform's own (its mise tasks), from the
@@ -119,6 +123,7 @@ if [ -n "$why" ]; then
     "first install") DATA_SINCE="$(now)" ;;
   esac
   record "$REF" "$WANT_SHA" installing "$DATA_SINCE"
+  run tools mise install || { record "$REF" "$WANT_SHA" failed "$DATA_SINCE"; exit 1; }
   run install mise run cluster:install || { record "$REF" "$WANT_SHA" failed "$DATA_SINCE"; exit 1; }
   for _ in $(seq 1 30); do ui_up && break; sleep 10; done
   ui_up || { say "installed, but $UI_URL does not answer after 5 minutes"; record "$REF" "$WANT_SHA" failed "$DATA_SINCE"; exit 1; }

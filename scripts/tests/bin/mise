@@ -4,6 +4,7 @@
 # STUB_TOOLS_FAIL=1 the tools.
 echo "$*" >> "$STUB_DIR/mise.calls"
 echo "${MISE_DATA_DIR:-}" >> "$STUB_DIR/mise.datadirs"
+echo "$1 $2 $(ps -o nice= -p $$ | tr -d ' ')" >> "$STUB_DIR/mise.nices"
 case "$*" in
   "run cluster:install")
     [ -z "${STUB_INSTALL_FAIL:-}" ] || { echo "image import failed"; exit 1; }

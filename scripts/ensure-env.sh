@@ -26,7 +26,7 @@
 #   4. inner-setup.sh.
 #
 # The commands it runs are the platform's own (its mise tasks), from the
-# checkout. Their output goes to work/logs/; on a failure the end of the log is
+# checkout, at the lowest priority (lib/inner.sh → low). Their output goes to work/logs/; on a failure the end of the log is
 # printed. An install takes long: run this as a background task.
 #
 # Exit 0 ready (prints `ready: <ref> at <sha>`) · 1 failed · 2 refused
@@ -60,7 +60,7 @@ mkdir -p "$LOGS"
 run() {
   local name="$1"; shift
   echo "$(now) $name: $*" >&2
-  if (cd "$CO" && "$@") > "$LOGS/$name.log" 2>&1; then return 0; fi
+  if (cd "$CO" && low "$@") > "$LOGS/$name.log" 2>&1; then return 0; fi
   say "$name failed: the end of work/logs/$name.log:"; tail -30 "$LOGS/$name.log" >&2
   return 1
 }

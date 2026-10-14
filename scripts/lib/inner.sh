@@ -12,6 +12,15 @@
 # across a restart.
 export MISE_DATA_DIR="${QA_MISE_DATA_DIR:-$HOME/.local/share/mise}"
 
+# low ...: a command at the lowest CPU priority, and the idle I/O class where
+# the kernel has one. The platform's install keeps every vCPU busy, and the
+# runner restarts a guest whose agent runtime misses its health probe (2 s)
+# for 45 s. Everything the install starts, the cluster too, inherits it, so
+# the agent runtime always gets the CPU first.
+low() {
+  if command -v ionice >/dev/null 2>&1; then nice -n 19 ionice -c 3 "$@"; else nice -n 19 "$@"; fi
+}
+
 UI_URL="${QA_UI_URL:-http://localhost:4444}"
 KC_HOST="keycloak.localhost"
 KC_PORT="${UI_URL##*:}"

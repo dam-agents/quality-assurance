@@ -28,7 +28,7 @@ TEMPLATE="$(cfg model_template)"
 ui_up || { say "the platform under test does not answer at $UI_URL"; exit 1; }
 
 LOGS="$HOME/work/logs"; mkdir -p "$LOGS"
-if ! (cd "$CO" && mise run //packages/cli:build) > "$LOGS/cli-build.log" 2>&1; then
+if ! (cd "$CO" && low mise run //packages/cli:build) > "$LOGS/cli-build.log" 2>&1; then
   say "the dam CLI did not build: the end of work/logs/cli-build.log:"; tail -20 "$LOGS/cli-build.log" >&2; exit 1
 fi
 

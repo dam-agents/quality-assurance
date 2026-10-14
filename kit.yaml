@@ -28,12 +28,15 @@ seed:
   into: home
 
 resources:
-  cpu: "12"
-  memory: 16Gi
+  cpu: "8"
+  memory: 8Gi
   storage: 80Gi
   note: >-
-    One full platform install: its images are built here, stored twice (the
-    build output and the cluster's image store), and its agents run here too.
+    One full platform install, the size the platform's own end-to-end cluster
+    runs in: its images are built here and stored twice (the build output and
+    the cluster's image store), and its agents run here too. Memory stays at
+    8Gi on purpose: a VM fills spare memory with file cache during the build,
+    and on a laptop host that pushes the host into swap.
 
 # The cluster is a process in the sandbox and stops with it. The agent stays up
 # so the platform under test stays warm between requests.

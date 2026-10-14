@@ -4,6 +4,16 @@
 **Upgrade** steps a deployed instance applies when it crosses that version.
 Most versions need nothing. What changed and why lives in the pull requests.
 
+## 0.1.4 (2026-10-14)
+
+The kit asks for 8 CPUs and 8Gi of memory instead of 12 and 16Gi: one
+platform install needs no more, and a VM that large pushed a laptop host into
+swap until the runner restarted it.
+
+**Upgrade:** `kit.yaml` reaches new agents only. An agent created before keeps
+its size until the operator changes it or creates the agent again
+(operator-only).
+
 ## 0.1.3 (2026-10-13)
 
 The scripts install the platform's tools under `~/.local/share/mise` instead

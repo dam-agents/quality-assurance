@@ -15,6 +15,11 @@ Ask it in chat:
 - **`test <what> on <branch>`**: it tests what you describe, on that branch or
   `PR #<n>`. With no ref, on the default branch.
 
+Or ask in the agent's Slack channel, when one is bound and onboarding
+recorded it: the same two requests, from a person (bots are refused). The
+agent answers in the thread when the test starts and again with the report,
+with a screenshot of the first failed step.
+
 One test runs at a time. A second request while one runs is answered "busy
 testing …" at once. The answer is **Passed**, **Failed** or **Blocked**, with
 "N of M steps tested": a step it could not test is never counted as passed.
@@ -61,7 +66,7 @@ All under `work/`, none of it tracked here:
 
 | File | Written by | Holds |
 | --- | --- | --- |
-| `CONFIG.md` | onboarding | the repository, the model template, bounds |
+| `CONFIG.md` | onboarding | the repository, the model template, the Slack chat, bounds |
 | `AGENTS.md`, `VERSION` | onboarding | a pointer to `CLAUDE.md`; the version this instance adopted |
 | `<name>/` | `ensure-env.sh` | the checkout, at the ref under test |
 | `ENV.md` | `ensure-env.sh` | what is installed: ref, commit, state |

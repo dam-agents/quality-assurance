@@ -9,9 +9,9 @@ description: >-
   Tests the platform the way a person uses it. It runs its own copy of the
   platform in its sandbox, at the branch or pull request you name, clicks
   through the web UI with a real model and reports per step what passed, what
-  failed and what it could not test. Ask it in chat: "test PR #123" tests a
-  pull request against its issue without reading the code; "test <what> on
-  <branch>" tests what you describe.
+  failed and what it could not test. Ask it in chat or in its Slack channel:
+  "test PR #123" tests a pull request against its issue without reading the
+  code; "test <what> on <branch>" tests what you describe.
 category: software
 icon: check
 docsUrl: https://github.com/dam-agents/quality-assurance
@@ -61,6 +61,12 @@ env:
 # The install pulls from registries, mirrors and package hosts no list can
 # enumerate ahead of time.
 egressPreset: all
+
+# Optional. Bound, people in that channel can ask for a test there and get the
+# report in their thread; onboarding records the channel as `slack_channel`.
+channels:
+  - type: slack
+    note: People in this channel can ask for a test and get the report in their thread.
 
 connections:
   - accepts: [github, github-enterprise]

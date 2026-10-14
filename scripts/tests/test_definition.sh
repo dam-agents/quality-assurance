@@ -22,6 +22,11 @@ CASE="the verifier accepts the config onboarding writes"; sandbox
 run bash "$SCRIPTS/verify-onboarding.sh" --config; is "$RC" 0 rc; has "$OUT" PASS out
 printf -- '- slots: 3\n' >> "$HOME/work/CONFIG.md"
 run bash "$SCRIPTS/verify-onboarding.sh" --config; is "$RC" 1 "unknown key"; has "$OUT" "unknown: slots" out
+sed -i.bak '/^- slots:/d' "$HOME/work/CONFIG.md"
+printf -- '- slack_channel: C0123ABCD\n' >> "$HOME/work/CONFIG.md"
+run bash "$SCRIPTS/verify-onboarding.sh" --config; is "$RC" 0 "a Slack chat id"; has "$OUT" "config.slack_channel: C0123ABCD" out
+sed -i.bak 's/^- slack_channel: .*/- slack_channel: #qa/' "$HOME/work/CONFIG.md"
+run bash "$SCRIPTS/verify-onboarding.sh" --config; is "$RC" 1 "a channel name, not an id"; has "$OUT" "is not a Slack chat id" out
 rm "$HOME/work/CONFIG.md"
 run bash "$SCRIPTS/verify-onboarding.sh" --config; is "$RC" 1 "no config"
 done_

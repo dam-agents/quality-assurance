@@ -16,6 +16,7 @@ Call `set_onboarding_checklist` with these steps:
 | `repo` | Which repository the platform is built from |
 | `access` | Confirm the connected account can read it |
 | `model` | Which model connection the platform under test borrows |
+| `slack` | Whether, and in which chat, people may ask for a test in Slack |
 | `bounds` | What you must never touch |
 | `install` | The first install, at the default branch |
 
@@ -47,6 +48,14 @@ One question at a time, each with a suggested answer.
   `bedrock`. Print names, never values. The person confirms; record it as
   `model_template`. `$PLATFORM_PROVIDER` empty: say this agent has no model
   connection of its own to lend, and stop.
+- **Slack**: optional, off unless the person says yes. Run `describe_channel`
+  for `slack`. When it lists chats, offer to take test requests there, and ask
+  which chat; the first one listed is the agent's bound channel. Record its id
+  as `slack_channel`. Say what it means: any person in that chat can ask
+  `test PR #<n>` or `test <what> on <ref>`, bots cannot, and each test answers
+  in its thread when it starts and when it ends ([`docs/slack.md`](docs/slack.md)).
+  Not connected: skip it, and say a channel can be bound in the agent's
+  settings later.
 - **Bounds**: anything you must never do beyond the Hard invariants. The
   default is none.
 
@@ -68,6 +77,7 @@ Then `work/CONFIG.md`, exactly in this shape:
 ```markdown
 - repo: owner/name
 - model_template: anthropic
+- slack_channel: C0123ABCD
 
 ## Bounds
 
@@ -78,8 +88,8 @@ Plain sentences, one per line.
 bash "$HOME/scripts/verify-onboarding.sh" --config
 ```
 
-Apply every `fix:` it prints and run it again until it passes. Show the
-person the file.
+Leave `slack_channel` out when Slack was declined. Apply every `fix:` it
+prints and run it again until it passes. Show the person the file.
 
 ## 4. Install
 
@@ -112,4 +122,4 @@ uncalled and say which one.
 
 Finish with a short summary: the final `work/CONFIG.md`, the ref and commit
 installed, and how to ask for a test: `test PR #<n>`, or `test <what> on
-<branch>`.
+<branch>`, here or, with `slack_channel` set, in that Slack chat.

@@ -4,15 +4,17 @@ description: >
   Test one request on the platform under test, the way a person would use it:
   take the test lock, get the platform to the ref, plan the steps, click
   through them in the shared browser, report a verdict per step, clean up.
-  Use for every "test PR #<n>" and "test <what> on <ref>" request in the
-  direct session (CLAUDE.md → Requests).
+  Use for every "test PR #<n>" and "test <what> on <ref>" request, in the
+  direct session or from a person in Slack (CLAUDE.md → Requests).
 ---
 
 # Test a request
 
 `CLAUDE.md` sets the rules this works within: the **Trust boundary**, the
 blind rule in **Requests**, and the **Hard invariants**. `$S` below is
-`$HOME/scripts`.
+`$HOME/scripts`. A request from Slack follows
+[`docs/slack.md`](../../../docs/slack.md) → **Run the test** where it differs
+from this page.
 
 ## 1. What to test, and on what
 
@@ -64,8 +66,9 @@ and the report counts it.
 - The platform is at `http://localhost:4444`; sign in as `dev`, password
   `dev` (the platform's local default user, not a secret).
 - Use the browser as the `agent-browser` skill says, in its shared profile, so
-  the person can watch in the Browser Panel. Give them the link once, when you
-  open the platform: `[Watch the test](platform://browser?url=<encoded url>)`.
+  the person can watch in the Browser Panel. In the direct session, give them
+  the link once, when you open the platform:
+  `[Watch the test](platform://browser?url=<encoded url>)`.
 - Name everything you create `qa-<YYYYMMDDHHMM>-<what>`, in UTC.
 - An agent you create on the platform under test uses the `outer-model`
   connection: that is the real model.
@@ -84,7 +87,8 @@ bash $S/cleanup.sh       # not after a Failed test: what it made stays for a per
 bash $S/test-lock.sh release passed|failed|blocked
 ```
 
-Then reply in the chat, in this shape:
+Then reply in the chat (from Slack: with `reply`, in the thread), in this
+shape:
 
 ```
 **<Passed|Failed|Blocked>** · <ref> at <short sha> · <N> of <M> steps tested

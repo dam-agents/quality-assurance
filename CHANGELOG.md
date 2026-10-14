@@ -4,6 +4,21 @@
 **Upgrade** steps a deployed instance applies when it crosses that version.
 Most versions need nothing. What changed and why lives in the pull requests.
 
+## 0.2.0 (2026-10-14)
+
+**Tests from Slack.** A person in `slack_channel` may ask `test PR #<n>` or
+`test <what> on <ref>`; the agent answers in the thread when the test starts
+and with the report, and stays in the turn until then (`scripts/env-wait.sh`).
+Bots are refused. Off unless `slack_channel` is set.
+
+**Upgrade:**
+
+1. Offer the operator Slack test requests (off by default). On a yes: bind a
+   Slack channel in the agent's settings (operator-only), then run
+   `describe_channel` for `slack` and write `- slack_channel: <chat id>` to
+   `work/CONFIG.md`.
+2. Run `bash "$HOME/scripts/verify-onboarding.sh" --config` and apply every fix.
+
 ## 0.1.5 (2026-10-14)
 
 The scripts run the platform's install, and everything it starts, at the

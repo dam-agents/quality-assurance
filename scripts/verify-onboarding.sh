@@ -27,7 +27,8 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 . "$HERE/lib/inner.sh"
 WORK="$HOME/work"
 CONFIG="$WORK/CONFIG.md"
-KNOWN="repo model_template"
+KNOWN="repo model_template slack_channel"
+REQUIRED="repo model_template"
 TEMPLATES="anthropic anthropic-oauth openai ibm-litellm curve-bender bedrock"
 
 CHECKS=0; FAILS=0; WARNS=0
@@ -50,13 +51,17 @@ REPO="$(cfg repo)"; SLUG="$(repo_slug)"; HOST="$(repo_host)"
 if [ ! -f "$CONFIG" ]; then
   fail config "work/CONFIG.md is missing" "write it: $CFG_FIX"
 else
-  for k in $KNOWN; do
+  for k in $REQUIRED; do
     if [ -n "$(cfg "$k")" ]; then ok "config.$k" "$(cfg "$k")"
     else fail "config.$k" "missing" "add \`- $k: <value>\`: $CFG_FIX"; fi
   done
   if [ -n "$REPO" ] && ! printf '%s' "$REPO" | grep -qE '^([A-Za-z0-9.-]+/)?[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'; then
     fail config.repo "'$REPO' is not owner/name" "write it as owner/name: $CFG_FIX"
   fi
+  sc="$(cfg slack_channel)"
+  if [ -z "$sc" ]; then ok config.slack_channel "none: Slack orders nothing"
+  elif printf '%s' "$sc" | grep -qE '^[CGD][A-Z0-9]{6,}$'; then ok config.slack_channel "$sc"
+  else fail config.slack_channel "'$sc' is not a Slack chat id" "use the id describe_channel lists, e.g. C0123ABCD: $CFG_FIX"; fi
   t="$(cfg model_template)"
   case " $TEMPLATES " in *" $t "*) ;; *) [ -z "$t" ] || warn config.model_template "'$t' is not a model template this definition knows: fine if the platform has it" ;; esac
   unknown="$(unknown_keys "$CONFIG")"

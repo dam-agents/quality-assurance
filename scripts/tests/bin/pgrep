@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
-# Stub pgrep: k3s runs while $STUB_DIR/k3s.up exists.
-[ "$*" = "-x k3s-server" ] && [ -f "$STUB_DIR/k3s.up" ]
+# Stub pgrep: k3s runs while $STUB_DIR/k3s.up exists, ensure-env.sh while
+# $STUB_DIR/ensure.running does.
+case "$*" in
+  "-x k3s-server") [ -f "$STUB_DIR/k3s.up" ] ;;
+  "-f scripts/ensure-env.sh") [ -f "$STUB_DIR/ensure.running" ] ;;
+  *) exit 1 ;;
+esac
